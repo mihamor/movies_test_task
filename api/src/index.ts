@@ -48,7 +48,7 @@ app.get('/movies',
   }
 });
 
-app.post('/movies/insert', async (req, res) => {
+app.post('/movies', async (req, res) => {
   const movie = req.body as MovieConfig;
 
   try {
@@ -77,6 +77,19 @@ async (req, res) => {
   }
 });
 
+app.delete('/movies/:id', async (req, res) => {
+  const id = req.params.id;
+  try {
+    const data = await Movie.findOneAndDelete({ _id: id });
+    if(!data) throw new Error('Movie not found');
+    res.json({ data });
+  } catch (error) {
+    res.status(400).json({
+      error: error.message,
+    });
+  }
+});
+
 mongoose.connect(config.databaseUrl, {
   useNewUrlParser: true,
   useFindAndModify: false,
@@ -95,5 +108,3 @@ mongoose.connection.on("open", () => {
     console.log(`API listening at http://localhost:${config.apiPort}`)
   });
 });
-
-  
