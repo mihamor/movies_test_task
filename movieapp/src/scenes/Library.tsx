@@ -6,9 +6,8 @@ import {
   Text,
   Button,
   Spinner,
-  CheckBox,
+  Toggle,
   Input,
-  useStyleSheet,
 } from '@ui-kitten/components';
 import {
   useDispatch,
@@ -19,7 +18,7 @@ import MovieCard from '_components/MovieCard';
 import ConfirmModal from '_components/ConfirmModal';
 import { moviesSelector, moviesStateSelector } from '_selectors/movies';
 import { NavigationProps } from '_types/navigation';
-import { MovieConfig, MovieRecord } from '_types/movie';
+import {  MovieRecord } from '_types/movie';
 import { addMovie, fetchMovies } from '_actions/movies';
 import { MovieQuery } from '_types/store';
 import { PlusIcon, SearchIcon, TrashIcon } from '../atoms/icons';
@@ -30,7 +29,7 @@ const Library: React.FC<NavigationProps> = ({
 }: NavigationProps) => {
   const [confirmVisible, setConfirmVisible] = useState<boolean>(false);
   const [focusedMovie, setFocusedMovie] = useState<MovieRecord | null>(null);
-  const sortedCheckboxState = useCheckboxState();
+  const [orderChecked, setOrderChecked] = useState(false);
   const searchInputState = useInputState();
   const { loading, error } = useSelector(moviesStateSelector);
   const movies = useSelector(moviesSelector);
@@ -46,7 +45,7 @@ const Library: React.FC<NavigationProps> = ({
 
   const onSearch = () => {
     dispatch(fetchMovies({
-      sorted: sortedCheckboxState.checked,
+      sorted: orderChecked,
       search: searchInputState.value,
     }));
   };
@@ -56,6 +55,8 @@ const Library: React.FC<NavigationProps> = ({
       dispatch(addMovie(newMovie));
     }
   });
+
+  useEffect(() => onSearch(), [orderChecked]);
 
   const onDelete = () => {
     // if (focusedMovie) {
@@ -78,7 +79,6 @@ const Library: React.FC<NavigationProps> = ({
         <Layout style={styles.inputRow}>
           <Input
             style={styles.input}
-            status='primary'
             placeholder='Enter movie titile, actors name etc.'
             {...searchInputState}
           />
@@ -88,11 +88,12 @@ const Library: React.FC<NavigationProps> = ({
             accessoryLeft={SearchIcon}
           />
         </Layout>
-        <CheckBox
-          status='primary'
-          {...sortedCheckboxState}>
-          Order by name
-        </CheckBox>
+        <Toggle
+          onChange={setOrderChecked}
+          checked={orderChecked}
+        >
+          Order by title
+        </Toggle>
       </Layout>
       <Layout style={styles.content}>
         {loading && <Spinner />}
@@ -146,6 +147,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   search: {
+    alignItems: 'flex-start',
     borderBottomColor: 'grey',
     borderBottomWidth: 0.3,
     paddingHorizontal: 10,
