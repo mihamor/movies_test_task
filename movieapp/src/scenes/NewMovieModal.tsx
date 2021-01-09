@@ -132,6 +132,7 @@ const NewMovieModal: React.FC<NavigationProps> = ({
           <Button
             disabled={!name
               || !year
+              || !actors.length
               || actors.some((actor) => !actor.fullname)}
             style={styles.button}
             size="large"
