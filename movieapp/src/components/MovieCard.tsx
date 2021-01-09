@@ -42,6 +42,9 @@ const MovieCard = ({
       <Text style={styles.movieInfo}>
         {`Format: ${movie.format}`}
       </Text>
+      <Text style={styles.movieInfo}>
+        {`Cast: ${movie.actors.map((actor => actor.fullname)).join(', ')}`}
+      </Text>
     </Card>
   </Layout>
 );

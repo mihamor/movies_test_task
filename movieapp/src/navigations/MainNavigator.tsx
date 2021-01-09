@@ -7,6 +7,9 @@ const AppNavigator = createStackNavigator(
   {
     Library: { screen: Library },
   },
+  {
+    headerMode: 'none',
+  },
 );
 
 export default AppNavigator;
