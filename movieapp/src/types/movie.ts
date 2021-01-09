@@ -5,7 +5,7 @@ interface Actor {
 type Format = 'VHS' | 'DVD' | 'Blu-Ray';
 
 export interface MovieConfig {
-  name: String,
+  name: string,
   year: Number,
   format: Format,
   actors: Actor[],
