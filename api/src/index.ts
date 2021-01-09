@@ -36,7 +36,8 @@ app.get('/movies',
     const data = await Movie.find(search
       ? { $text: { $search: search } }
       : {})
-    .sort(sorted
+    .collation({ locale: "en" }) 
+    .sort(sorted === 'true'
       ? { name: 'asc'}
       : { created: 'desc' });
     

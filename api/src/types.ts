@@ -1,6 +1,6 @@
 export interface MovieQuery {
   search?: string,
-  sorted?: boolean,
+  sorted?: string,
 };
 
 interface Actor {
