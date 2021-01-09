@@ -137,6 +137,8 @@ const NewMovieModal: React.FC<NavigationProps> = ({
             size="large"
             onPress={() => {
               const newMovie = {
+                id: uuidv4(),
+                created: Date.now(),
                 name,
                 year,
                 format: formats[formatIndex.row],

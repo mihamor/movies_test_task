@@ -1,29 +1,40 @@
-import React, { useEffect } from 'react';
-import { FlatList, StyleSheet } from 'react-native';
-import { Layout, Text, Button, Spinner, CheckBox, Input } from '@ui-kitten/components';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
+import {
+  Layout,
+  Text,
+  Button,
+  Spinner,
+  CheckBox,
+  Input,
+  useStyleSheet,
+} from '@ui-kitten/components';
 import {
   useDispatch,
   useSelector,
 } from 'react-redux';
 
 import MovieCard from '_components/MovieCard';
+import ConfirmModal from '_components/ConfirmModal';
 import { moviesSelector, moviesStateSelector } from '_selectors/movies';
 import { NavigationProps } from '_types/navigation';
 import { MovieConfig, MovieRecord } from '_types/movie';
-import { fetchMovies } from '_actions/movies';
+import { addMovie, fetchMovies } from '_actions/movies';
 import { MovieQuery } from '_types/store';
-import { PlusIcon, SearchIcon } from '../atoms/icons';
+import { PlusIcon, SearchIcon, TrashIcon } from '../atoms/icons';
 import { useCheckboxState, useInputState } from './helpers';
-import { ScrollView } from 'react-native-gesture-handler';
 
 const Library: React.FC<NavigationProps> = ({
   navigation,
 }: NavigationProps) => {
+  const [confirmVisible, setConfirmVisible] = useState<boolean>(false);
+  const [focusedMovie, setFocusedMovie] = useState<MovieRecord | null>(null);
   const sortedCheckboxState = useCheckboxState();
   const searchInputState = useInputState();
   const { loading, error } = useSelector(moviesStateSelector);
   const movies = useSelector(moviesSelector);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch();;
 
   useEffect(() => {
     const initialQuery: MovieQuery = {
@@ -33,13 +44,38 @@ const Library: React.FC<NavigationProps> = ({
     dispatch(fetchMovies(initialQuery));
   }, []);
 
+  const onSearch = () => {
+    dispatch(fetchMovies({
+      sorted: sortedCheckboxState.checked,
+      search: searchInputState.value,
+    }));
+  };
+
+  const onNewMovie = () => navigation.navigate('NewMovieModal', {
+    onSubmit: (newMovie: MovieRecord) => {
+      dispatch(addMovie(newMovie));
+    }
+  });
+
+  const onDelete = () => {
+    // if (focusedMovie) {
+    //   dispatch(deleteMovie(focusedMovie._id));
+    // }
+    setConfirmVisible(false);
+  }
+
   return (
     <Layout style={styles.container}>
+      <ConfirmModal
+        visible={confirmVisible}
+        title="Are you sure you want to delete this movie?"
+        description="This action can't be undone"
+        onBackdropPress={() => setConfirmVisible(false)}
+        onReject={() => setConfirmVisible(false)}
+        onConfirm={onDelete}
+      />
       <Layout style={styles.search}>
-        <Layout style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-        }}>
+        <Layout style={styles.inputRow}>
           <Input
             style={styles.input}
             status='primary'
@@ -48,12 +84,7 @@ const Library: React.FC<NavigationProps> = ({
           />
           <Button
             style={styles.searchButton}
-            onPress={() => {
-              dispatch(fetchMovies({
-                sorted: sortedCheckboxState.checked,
-                search: searchInputState.value,
-              }));
-            }}
+            onPress={onSearch}
             accessoryLeft={SearchIcon}
           />
         </Layout>
@@ -68,7 +99,7 @@ const Library: React.FC<NavigationProps> = ({
         {!loading && error && (
           <Text status="danger">{`Error occured: ${error.message}`}</Text>
         )}
-        {!loading && !error && (
+        {!loading && movies && (
           <ScrollView style={styles.list}>
             {movies.map((movie) => (
               <MovieCard
@@ -77,12 +108,20 @@ const Library: React.FC<NavigationProps> = ({
                 footer={() => (
                   <Button
                     accessoryLeft={SearchIcon}
-                    onPress={() => (
-                      navigation.navigate('ShowMoive', { movie })
-                    )}
+                    onPress={() => navigation.navigate('Movie', { movie })}
                   >
                     Show movie info
                   </Button>
+                )}
+                headerAccessories={() => (
+                  <Button
+                    status="control"
+                    accessoryLeft={TrashIcon}
+                    onPress={() => {
+                      setFocusedMovie(movie);
+                      setConfirmVisible(true);
+                    }}
+                  />
                 )}
               />
             ))}
@@ -90,18 +129,13 @@ const Library: React.FC<NavigationProps> = ({
         )}
       </Layout>
       <Button
-        onPress={() => navigation.navigate('NewMovieModal', {
-          onSubmit: (newMovie: MovieConfig) => {
-            console.log(newMovie);
-          }
-        })}
+        onPress={onNewMovie}
         accessoryLeft={PlusIcon}
         style={styles.addButton}
       />
     </Layout>
   );
 };
-
 
 
 const styles = StyleSheet.create({
@@ -112,8 +146,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   search: {
+    borderBottomColor: 'grey',
+    borderBottomWidth: 0.3,
+    paddingHorizontal: 10,
     paddingVertical: 5,
-    width: '90%',
+    width: '100%',
+  },
+  inputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   input: {
     width: '90%',
@@ -151,9 +192,6 @@ const styles = StyleSheet.create({
   listContainer: {
     height: '100%',
     position: 'relative',
-  },
-  deckHint: {
-    marginBottom: 10,
   },
   headingArea: {
     marginVertical: 7,
