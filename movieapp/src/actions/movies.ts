@@ -102,7 +102,8 @@ export const importMovies = (
   formData: FormData,
 ): ThunkAction<void, AppState, unknown, MoviesActionTypes> => async dispatch => {
   try {
-    await MoviesService.importMovies(formData);
+    const { error } = await MoviesService.importMovies(formData);
+    if(error) throw new Error(error);
     dispatch(fetchMovies({ sorted: false, search: '' }));
   } catch (error) {
     dispatch(setMoviesError(error))

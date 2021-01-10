@@ -43,8 +43,12 @@ class MoviesService {
         'Content-Type': 'multipart/form-data',
       },
     }).then((response) => response.json());
+    console.log(jsonRepsonse);
     const movieRecords: MovieRecord[] = jsonRepsonse.data;
-    return movieRecords;
+    return {
+      data: movieRecords,
+      error: jsonRepsonse.error,
+    };
   }
 };
 
