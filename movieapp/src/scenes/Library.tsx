@@ -14,15 +14,19 @@ import {
   useSelector,
 } from 'react-redux';
 
+import {
+  addMovie,
+  fetchMovies,
+  deleteMovie,
+} from '_actions/movies';
 import MovieCard from '_components/MovieCard';
 import ConfirmModal from '_components/ConfirmModal';
 import { moviesSelector, moviesStateSelector } from '_selectors/movies';
 import { NavigationProps } from '_types/navigation';
 import {  MovieRecord } from '_types/movie';
-import { addMovie, fetchMovies } from '_actions/movies';
 import { MovieQuery } from '_types/store';
 import { PlusIcon, SearchIcon, TrashIcon } from '../atoms/icons';
-import { useCheckboxState, useInputState } from './helpers';
+import {  useInputState } from './helpers';
 
 const Library: React.FC<NavigationProps> = ({
   navigation,
@@ -59,9 +63,9 @@ const Library: React.FC<NavigationProps> = ({
   useEffect(() => onSearch(), [orderChecked]);
 
   const onDelete = () => {
-    // if (focusedMovie) {
-    //   dispatch(deleteMovie(focusedMovie._id));
-    // }
+    if (focusedMovie) {
+      dispatch(deleteMovie(focusedMovie));
+    }
     setConfirmVisible(false);
   }
 

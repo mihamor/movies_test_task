@@ -7,6 +7,9 @@ import {
   ADD_MOVIE,
   ADD_MOVIE_COMMIT,
   ADD_MOVIE_ROLLBACK,
+  DELETE_MOVIE,
+  DELETE_MOVIE_COMMIT,
+  DELETE_MOVIE_ROLLBACK,
 } from '../types/store';
 
 const initialState: MoviesState = {
@@ -80,6 +83,26 @@ const resultStorage = (
           [action.meta._id]: null,
         },
         error: new Error('Can\'t add movie'),
+      }
+    }
+    case DELETE_MOVIE: {
+      return {
+        ...state,
+        movies: {
+          ...state.movies,
+          [action.payload._id]: null,
+        },
+      };
+    }
+    case DELETE_MOVIE_ROLLBACK: {
+      // restore movie back to state
+      return {
+        ...state,
+        movies: {
+          ...state.movies,
+          [action.meta._id]: action.meta,
+        },
+        error: new Error('Can\'t delete movie'),
       }
     }
     default:

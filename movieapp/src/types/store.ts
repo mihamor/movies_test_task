@@ -13,6 +13,10 @@ export const ADD_MOVIE = 'ADD_MOVIE';
 export const ADD_MOVIE_COMMIT = 'ADD_MOVIE_COMMIT';
 export const ADD_MOVIE_ROLLBACK = 'ADD_MOVIE_ROLLBACK';
 
+export const DELETE_MOVIE = 'DELETE_MOVIE';
+export const DELETE_MOVIE_COMMIT = 'DELETE_MOVIE_COMMIT';
+export const DELETE_MOVIE_ROLLBACK = 'DELETE_MOVIE_ROLLBACK';
+
 export interface StartMoviewLoadingAction {
   type: typeof START_MOVIES_LOADING,
   payload: MovieQuery,
@@ -55,12 +59,41 @@ export interface AddMovieAction {
   }
 };
 
+export interface DeleteMovieCommitAction {
+  type: typeof DELETE_MOVIE_COMMIT,
+  payload?: { data: MovieRecord }, 
+  meta: MovieRecord,
+};
+
+export interface DeleteMovieRollbackAction {
+  type: typeof DELETE_MOVIE_ROLLBACK,
+  meta: MovieRecord,
+};
+
+export interface DeleteMovieAction {
+  type: typeof DELETE_MOVIE,
+  payload: MovieRecord,
+  meta: {
+    offline: {
+      effect: {
+        url: string,
+        method: 'DELETE',
+      },
+      commit: DeleteMovieCommitAction,
+      rollback: DeleteMovieRollbackAction,
+    },
+  }
+};
+
 export type MoviesActionTypes = StartMoviewLoadingAction
 | SetMoviesAction
 | SetMoviesErrorAction
 | AddMovieAction
 | AddMovieCommitAction
-| AddMovieRollbackAction;
+| AddMovieRollbackAction
+| DeleteMovieAction
+| DeleteMovieCommitAction
+| DeleteMovieRollbackAction;
 
 export type MoviesState = {
   query: MovieQuery,

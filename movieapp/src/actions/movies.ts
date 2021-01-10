@@ -12,6 +12,9 @@ import {
   ADD_MOVIE_COMMIT,
   ADD_MOVIE_ROLLBACK,
   MovieQuery,
+  DELETE_MOVIE,
+  DELETE_MOVIE_COMMIT,
+  DELETE_MOVIE_ROLLBACK,
 } from '_types/store';
 
 export const setMovies = (
@@ -70,5 +73,30 @@ export const addMovie = (
     },
   },
 });
+
+export const deleteMovie = (
+  movie: MovieRecord,
+): MoviesActionTypes => ({
+  type: DELETE_MOVIE,
+  payload: movie,
+  meta: {
+    offline: {
+      effect: {
+        url: `${config.apiUrl}/movies/${movie._id}`,
+        method: 'DELETE',
+      },
+      commit: {
+        type: DELETE_MOVIE_COMMIT,
+        meta: movie,
+      },
+      rollback: {
+        type: DELETE_MOVIE_ROLLBACK,
+        meta: movie,
+      },
+    },
+  },
+});
+  
+
   
 
