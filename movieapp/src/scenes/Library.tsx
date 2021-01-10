@@ -18,6 +18,7 @@ import {
   addMovie,
   fetchMovies,
   deleteMovie,
+  importMovies,
 } from '_actions/movies';
 import MovieCard from '_components/MovieCard';
 import ConfirmModal from '_components/ConfirmModal';
@@ -37,13 +38,13 @@ const Library: React.FC<NavigationProps> = ({
   const searchInputState = useInputState();
   const { loading, error } = useSelector(moviesStateSelector);
   const movies = useSelector(moviesSelector);
-  const dispatch = useDispatch();;
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const initialQuery: MovieQuery = {
       search: '',
       sorted: false,
-    }
+    };
     dispatch(fetchMovies(initialQuery));
   }, []);
 
@@ -57,6 +58,9 @@ const Library: React.FC<NavigationProps> = ({
   const onNewMovie = () => navigation.navigate('NewMovieModal', {
     onSubmit: (newMovie: MovieRecord) => {
       dispatch(addMovie(newMovie));
+    },
+    onImport: (formData: FormData) => {
+      dispatch(importMovies(formData));
     }
   });
 
@@ -183,24 +187,9 @@ const styles = StyleSheet.create({
     bottom: 10,
     right: 10,
   },
-  buttonContainer: {
-    marginTop: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  actionButton: {
-    width: '49%',
-  },
   list: {
     height: '92%',
     width: '100%',
-  },
-  listContainer: {
-    height: '100%',
-    position: 'relative',
-  },
-  headingArea: {
-    marginVertical: 7,
   },
 });
 

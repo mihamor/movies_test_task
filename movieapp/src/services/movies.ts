@@ -33,6 +33,19 @@ class MoviesService {
     const movieRecord: MovieRecord = jsonRepsonse.data;
     return movieRecord;
   }
+
+  static async importMovies(formData: FormData) {
+    const url = `${config.apiUrl}/movies/import`;
+    const jsonRepsonse = await fetch(url, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }).then((response) => response.json());
+    const movieRecords: MovieRecord[] = jsonRepsonse.data;
+    return movieRecords;
+  }
 };
 
 export default MoviesService;

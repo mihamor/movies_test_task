@@ -96,6 +96,19 @@ export const deleteMovie = (
     },
   },
 });
+
+
+export const importMovies = (
+  formData: FormData,
+): ThunkAction<void, AppState, unknown, MoviesActionTypes> => async dispatch => {
+  try {
+    await MoviesService.importMovies(formData);
+    dispatch(fetchMovies({ sorted: false, search: '' }));
+  } catch (error) {
+    dispatch(setMoviesError(error))
+  }
+}
+
   
 
   

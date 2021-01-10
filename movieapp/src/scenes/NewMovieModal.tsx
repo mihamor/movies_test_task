@@ -20,6 +20,7 @@ import Header from '_components/Header';
 import KeyboardAvoidingView from '_components/KeyboardAvoidingView';
 import formats from '_constants/formats';
 import { NavigationProps } from '_types/navigation';
+import ImportService from '_services/import';
 
 const MAXIMUM_ACTORS = 5;
 interface ActorInputValue {
@@ -31,6 +32,7 @@ const NewMovieModal: React.FC<NavigationProps> = ({
   navigation,
 }: NavigationProps) => {
   const onSubmit = navigation.getParam('onSubmit', null);
+  const onImport = navigation.getParam('onImport', null);
   const [name, setName] = useState<string>('');
   const [year, setYear] = useState<number>(2000);
   const [formatIndex, setFormatIndex] = useState<IndexPath>(new IndexPath(0));
@@ -150,6 +152,19 @@ const NewMovieModal: React.FC<NavigationProps> = ({
             }}
           >
             Create new movie
+          </Button>
+          <Button
+            style={styles.button}
+            size="large"
+            onPress={async () => {
+              const formData = await ImportService.importFromFile();
+              if(formData) {
+                onImport(formData);
+                navigation.goBack();
+              }
+            }}
+          >
+            Import from file
           </Button>
         </Layout>
       </KeyboardAvoidingView>
