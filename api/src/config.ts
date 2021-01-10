@@ -1,6 +1,6 @@
 const config = {
-  apiPort: 3030,
-  databaseUrl: 'mongodb://localhost:27017/movies'
+  apiPort: process.env.API_PORT || 3030,
+  databaseUrl: process.env.DATABASE_URL || 'mongodb://localhost:27017/movies'
 };
 
 export default config;
