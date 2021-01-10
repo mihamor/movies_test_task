@@ -1,3 +1,3 @@
-const availableFormats = ['VHS', 'Blu-ray', 'DVD'];
+const availableFormats = ['VHS', 'Blu-Ray', 'DVD'];
 
 export default availableFormats;
