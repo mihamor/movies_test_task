@@ -43,8 +43,9 @@ export const fetchMovies = (
 ): ThunkAction<void, AppState, unknown, MoviesActionTypes> => async dispatch => {
   try {
     dispatch(startMoviesLoading(query));
-    const movies = await MoviesService.getMovies(query);
-    dispatch(setMovies(movies));
+    const { data, error } = await MoviesService.getMovies(query);
+    if(error || !data) throw new Error(error);
+    dispatch(setMovies(data));
   } catch (error) {
     dispatch(setMoviesError(error))
   }

@@ -145,7 +145,7 @@ const NewMovieModal: React.FC<NavigationProps> = ({
                 name,
                 year,
                 format: formats[formatIndex.row],
-                actors: actors.map(({ fullname }) => ({ fullname })),
+                actors,
               };
               onSubmit(newMovie);
               navigation.goBack();

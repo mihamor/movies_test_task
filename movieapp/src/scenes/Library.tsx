@@ -6,8 +6,6 @@ import {
   Text,
   Button,
   Spinner,
-  Toggle,
-  Input,
 } from '@ui-kitten/components';
 import {
   useDispatch,
@@ -27,15 +25,13 @@ import { NavigationProps } from '_types/navigation';
 import {  MovieRecord } from '_types/movie';
 import { MovieQuery } from '_types/store';
 import { PlusIcon, SearchIcon, TrashIcon } from '../atoms/icons';
-import {  useInputState } from './helpers';
+import SearchBar from '_components/SearchBar';
 
 const Library: React.FC<NavigationProps> = ({
   navigation,
 }: NavigationProps) => {
   const [confirmVisible, setConfirmVisible] = useState<boolean>(false);
   const [focusedMovie, setFocusedMovie] = useState<MovieRecord | null>(null);
-  const [orderChecked, setOrderChecked] = useState(false);
-  const searchInputState = useInputState();
   const { loading, error } = useSelector(moviesStateSelector);
   const movies = useSelector(moviesSelector);
   const dispatch = useDispatch();
@@ -48,11 +44,8 @@ const Library: React.FC<NavigationProps> = ({
     dispatch(fetchMovies(initialQuery));
   }, []);
 
-  const onSearch = () => {
-    dispatch(fetchMovies({
-      sorted: orderChecked,
-      search: searchInputState.value,
-    }));
+  const onSearch = (query: MovieQuery) => {
+    dispatch(fetchMovies(query));
   };
 
   const onNewMovie = () => navigation.navigate('NewMovieModal', {
@@ -63,8 +56,6 @@ const Library: React.FC<NavigationProps> = ({
       dispatch(importMovies(formData));
     }
   });
-
-  useEffect(() => onSearch(), [orderChecked]);
 
   const onDelete = () => {
     if (focusedMovie) {
@@ -83,30 +74,14 @@ const Library: React.FC<NavigationProps> = ({
         onReject={() => setConfirmVisible(false)}
         onConfirm={onDelete}
       />
-      <Layout style={styles.search}>
-        <Layout style={styles.inputRow}>
-          <Input
-            style={styles.input}
-            placeholder='Enter movie titile, actors name etc.'
-            {...searchInputState}
-          />
-          <Button
-            style={styles.searchButton}
-            onPress={onSearch}
-            accessoryLeft={SearchIcon}
-          />
-        </Layout>
-        <Toggle
-          onChange={setOrderChecked}
-          checked={orderChecked}
-        >
-          Order by title
-        </Toggle>
-      </Layout>
+      <SearchBar onSearch={onSearch} />
       <Layout style={styles.content}>
         {loading && <Spinner />}
         {!loading && error && (
-          <Text status="danger">{`Error occured: ${error.message}`}</Text>
+          <Text style={styles.infoText} status="danger">{`Error occured: ${error.message}`}</Text>
+        )}
+        {!loading && !error && !movies.length && (
+          <Text style={styles.infoText} appearance="hint">No movies found :(</Text>
         )}
         {!loading && movies && (
           <ScrollView style={styles.list}>
@@ -154,30 +129,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  search: {
-    alignItems: 'flex-start',
-    borderBottomColor: 'grey',
-    borderBottomWidth: 0.3,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    width: '100%',
-  },
-  inputRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  input: {
-    width: '90%',
-    marginRight: 5,
-  },
-  searchButton: {
-    width: '8%',
-  },
   content: {
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
     height: '85%',
+  },
+  infoText: {
+    marginTop: 20,
   },
   addButton: {
     width: 50,
