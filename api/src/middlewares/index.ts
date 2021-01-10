@@ -4,8 +4,6 @@ import { RequestHandler } from 'express';
 export const validateSearchQuery: RequestHandler = (req, res, next) => {
   const { sorted, search } = req.query;
 
-  console.log(typeof sorted);
-  console.log(typeof search);
   if(typeof sorted !== 'string' && typeof sorted !== 'undefined'
   && typeof search !== 'string' && typeof search !== 'undefined') {
     res.status(400).json({
