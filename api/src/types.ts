@@ -7,7 +7,7 @@ interface Actor {
   fullname: string,
 };
 
-type Format = 'VHS' | 'DVD' | 'Blu-Ray';
+export type Format = 'VHS' | 'DVD' | 'Blu-Ray';
 
 export interface MovieConfig {
   name: String,

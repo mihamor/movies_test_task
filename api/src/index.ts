@@ -65,7 +65,7 @@ app.post('/movies', async (req, res) => {
 app.post('/movies/import',
 validateImportFile,
 async (req, res) => {
-  const movies = req.files.movies as fileUpload.UploadedFile;
+  const movies = req.files?.movies as fileUpload.UploadedFile;
   const fileContent = movies.data.toString();
   try {
     const parsedMovies = MovieParser.parse(fileContent);

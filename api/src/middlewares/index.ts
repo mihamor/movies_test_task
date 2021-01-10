@@ -15,7 +15,7 @@ export const validateSearchQuery: RequestHandler = (req, res, next) => {
 };
 
 export const validateImportFile: RequestHandler = (req, res, next) => {
-  const movies = req.files.movies;
+  const movies = req.files?.movies;
 
   if(!movies
     || Array.isArray(movies)
