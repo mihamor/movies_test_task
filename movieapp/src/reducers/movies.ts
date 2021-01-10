@@ -37,7 +37,7 @@ const resultStorage = (
     case SET_MOVIES_ERROR:
       return {
         ...state,
-        error: action.payload,
+        error: action.payload.message,
         loading: false,
       };
     case SET_MOVIES: {
@@ -62,16 +62,16 @@ const resultStorage = (
     }
     case ADD_MOVIE_COMMIT: {
       // delete old predicted movie & add actual
-      console.log('ADD_MOVIE_COMMIT', action.payload);
       return {
         ...state,
         movies: {
           ...state.movies,
           [action.meta._id]: null,
-          ...( action.payload ? {
+          ...( action.payload?.data ? {
             [action.payload.data._id]: action.payload.data,
           } : {}),
-        }
+        },
+        error: action.payload?.error,
       }
     }
     case ADD_MOVIE_ROLLBACK: {
@@ -82,7 +82,7 @@ const resultStorage = (
           ...state.movies,
           [action.meta._id]: null,
         },
-        error: new Error('Can\'t add movie'),
+        error: action.payload?.message,
       }
     }
     case DELETE_MOVIE: {
@@ -102,7 +102,7 @@ const resultStorage = (
           ...state.movies,
           [action.meta._id]: action.meta,
         },
-        error: new Error('Can\'t delete movie'),
+        error: action.payload?.message,
       }
     }
     default:

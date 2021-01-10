@@ -78,7 +78,7 @@ const Library: React.FC<NavigationProps> = ({
       <Layout style={styles.content}>
         {loading && <Spinner />}
         {!loading && error && (
-          <Text style={styles.infoText} status="danger">{`Error occured: ${error.message}`}</Text>
+          <Text style={styles.infoText} status="danger">{`Error occured: ${error}`}</Text>
         )}
         {!loading && !error && !movies.length && (
           <Text style={styles.infoText} appearance="hint">No movies found :(</Text>

@@ -34,13 +34,14 @@ export interface SetMoviesErrorAction {
 
 export interface AddMovieCommitAction {
   type: typeof ADD_MOVIE_COMMIT,
-  payload?: { data: MovieRecord }, 
+  payload?: { data?: MovieRecord, error?: string }, 
   meta: MovieRecord,
 };
 
 export interface AddMovieRollbackAction {
   type: typeof ADD_MOVIE_ROLLBACK,
   meta: MovieRecord,
+  payload?: Error,
 };
 
 export interface AddMovieAction {
@@ -61,13 +62,14 @@ export interface AddMovieAction {
 
 export interface DeleteMovieCommitAction {
   type: typeof DELETE_MOVIE_COMMIT,
-  payload?: { data: MovieRecord }, 
+  payload?: { data?: MovieRecord, error?: string }, 
   meta: MovieRecord,
 };
 
 export interface DeleteMovieRollbackAction {
   type: typeof DELETE_MOVIE_ROLLBACK,
   meta: MovieRecord,
+  payload?: Error,
 };
 
 export interface DeleteMovieAction {
@@ -100,7 +102,7 @@ export type MoviesState = {
   movies: {
     [key: string]:  MovieRecord | null,
   },
-  error?: Error | null,
+  error?: string | null,
   loading: boolean,
 };
 
