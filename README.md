@@ -12,6 +12,13 @@ yarn install
 yarn run android
 ```
 
+## Running parser tests:
+
+```
+cd api
+npm run test
+```
+
 ## Tech stack
 
 ### DB
