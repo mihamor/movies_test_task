@@ -16,6 +16,7 @@ yarn run android
 
 ```
 cd api
+npm install
 npm run test
 ```
 
